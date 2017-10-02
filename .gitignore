@@ -1,0 +1,13 @@
+.DS_Store
+lib
+bin
+.classpath
+.project
+.settings
+src/ParseException.java
+src/SimpleCharStream.java
+src/SimpleDBMSParser.java
+src/SimpleDBMSParserConstants.java
+src/SimpleDBMSParserTokenManager.java
+src/Token.java
+src/TokenMgrError.java
