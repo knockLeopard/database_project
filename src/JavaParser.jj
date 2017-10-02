@@ -75,10 +75,20 @@ TOKEN : /* Keywords */
 | < DROP_TABLE : "drop table" >
 | < DESC : "desc" >
 | < SHOW_TABLES : "show tables" >
+| < SELECT : "select" >
 | < NOT_NULL : "not null" >
 | < PRIMARY_KEY : "primary key" >
 | < FOREIGN_KEY : "foreign key" >
 | < REFERENCES : "references" >
+| < AS : "as" >
+| < FROM : "from" >
+| < STAR : "*" >
+| < WHERE : "where" >
+| < AND : "and" >
+| < OR : "or" >
+| < IS : "is" >
+| < NOT : "not" >
+| < NULL : "null" >
 }
 
 TOKEN :
@@ -87,9 +97,17 @@ TOKEN :
 | < LEFT_PAREN : "(" >
 | < RIGHT_PAREN : ")" >
 | < COMMA : "," >
+| < PERIOD : "." >
 | < UNDERSCORE : "_" >
+| < CHAR_STRING : <QUOTE> (<NON_QUOTE_CHARACTER>)* <QUOTE> > 
 | < INT_VALUE : (< SIGN >)? (< DIGIT >)+>
 | < SIGN : "+" | "-" >
+| < DATE_VALUE : <NNNN> "-" <NN> "-" <NN>>
+| < NNNN : < DIGIT > < DIGIT > < DIGIT > < DIGIT >>
+| < NN : < DIGIT > < DIGIT > >
+| < NON_QUOTE_CHARACTER : <DIGIT> | <ALPHABET> | <NON_QUOTE_SPECIAL_CHARACTERS> | " " > 
+| < QUOTE : "'" >
+| < NON_QUOTE_SPECIAL_CHARACTERS :  "!"| "#"| "/"| ":"| "@"| "["| "_"| "]"| "{"| " }"| "~"  >
 | < DIGIT : [ "0"-"9" ] >
 | < LEGAL_IDENTIFIER : < ALPHABET > (< ALPHABET > | < UNDERSCORE >)* >
 | < ALPHABET : [ "a"-"z", "A"-"Z" ] >
@@ -148,7 +166,7 @@ int query() :
 | (
     showTablesQuery()
     {
-      q = PRINT_SHOW_TABLES_;
+      q = PRINT_SHOW_TABLES;
     }
   )
   
@@ -187,6 +205,204 @@ void showTablesQuery() :
 {
   < SHOW_TABLES >
 }
+
+void selectQuery() :
+{}
+{
+  < SELECT >
+  selectList()
+  tableExpression()
+}
+
+void selectList() :
+{ }
+{
+  < STAR >
+| (
+  selectedColumn()
+  (
+  < COMMA >
+  selectedColumn()
+  )*
+  )}
+
+void selectedColumn() :
+{ }
+{  
+  (
+    tableName()
+    < PERIOD >
+  )?
+  columnName()
+  (    < AS >
+    columnName()
+  )?
+}
+
+void tableExpression() :
+{
+}
+{
+  fromClause()
+  (    whereClause()
+  )?
+}
+
+void fromClause() :
+{
+}
+{
+  < FROM >
+  tableReferenceList()
+}
+
+void tableReferenceList() :
+{
+}
+{
+  referedTable()
+  (    < COMMA >
+    referedTable()
+  )*
+}
+
+void referedTable() :
+{
+}
+{
+  tableName()
+  (    tableName()
+  )?
+}
+
+void whereClause() :
+{
+}
+{
+  < WHERE >
+  booleanValueExpression()
+}
+
+void booleanValueExpression() :
+{
+}
+{
+  booleanTerm()
+  (    < OR >
+    booleanTerm()
+  )*
+}
+
+void booleanTerm() :
+{
+}
+{
+  booleanFactor()
+  (    < AND >
+    booleanFactor()
+  )*
+}
+
+void booleanFactor() :
+{ }
+{
+  (    < NOT >
+  )?
+  booleanTest()
+}
+
+void booleanTest() :
+{
+}
+{
+  predicate()
+| parenthesizedBooleanExpression()
+}
+
+void parenthesizedBooleanExpression() :
+{
+}
+{
+  < LEFT_PAREN >
+  booleanValueExpression()
+  < RIGHT_PAREN >
+}
+
+void predicate() :
+{
+}
+{
+  comparisonPredicate()
+| nullPredicate()
+}
+
+void comparisonPredicate() :
+{
+}
+{
+  compOperand()
+  compOP()
+  compOperand()
+}
+
+void compOperand() :
+{
+}
+{
+  comparableValue()
+| (
+    (
+      tableName()
+      < PERIOD >
+    )?
+    columnName()
+  )
+}
+
+void compOP() :
+{
+}
+{
+  "<" | ">" | "=" | ">=" | "<=" | "!=" 
+}
+
+void comparableValue() :
+{
+}
+{
+  < INT_VALUE >
+| < CHAR_STRING >
+| < DATE_VALUE >
+}
+
+void nullPredicate() :
+{
+}
+{
+  (    tableName()
+    < PERIOD >
+  )?
+  columnName()
+  nullOperation()
+}
+
+void nullOperation() :
+{
+}
+{
+  < IS >
+  (    < NOT >
+  )?
+  < NULL >
+}
+  
+
+  
+  
+   
+
+
+  
 
 void tableElementList() :
 {}
