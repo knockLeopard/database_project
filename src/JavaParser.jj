@@ -89,6 +89,10 @@ TOKEN : /* Keywords */
 | < IS : "is" >
 | < NOT : "not" >
 | < NULL : "null" >
+| < INSERT : "insert" >
+| < INTO : "into" >
+| < VALUES : "values" >
+| < DELETE : "delete" >
 }
 
 TOKEN :
@@ -492,7 +496,57 @@ void nullOperation() :
   < NULL >
 }
 
+// INSERT
+void insertQuery() :
+{}
+{
+  < INSERT >
+  < INTO >
+  tableName()
+  insertColumnsAndSource()
+}
 
+void insertColumnsAndSource() :
+{
+}
+{
+  (    columnNameList()
+  )?
+  valueList()
+}
+
+void valueList() :
+{
+}
+{
+  < VALUES >
+  < LEFT_PAREN >
+  value()
+  (    < COMMA >
+    value()
+  )*
+  < RIGHT_PAREN >
+}
+
+void value() :
+{
+}
+{
+  < NULL >
+| comparableValue()
+}
+
+// DELETE
+void deleteQuery() :
+{
+}
+{
+  < DELETE >
+  < FROM >
+  tableName()
+  (    whereClause()
+  )?
+}
   
 
   
