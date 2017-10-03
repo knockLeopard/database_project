@@ -178,6 +178,7 @@ int query() :
   )
 }
 
+// CREATE TABLE
 void createTableQuery() :
 {}
 {
@@ -186,6 +187,98 @@ void createTableQuery() :
   tableElementList()
 }
 
+void tableElementList() :
+{}
+{
+  < LEFT_PAREN >
+  tableElement()
+  (
+    < COMMA >
+    tableElement()
+  )*
+  < RIGHT_PAREN >
+}
+
+void tableElement() :
+{
+}
+{
+  columnDefinition()
+| tableConstraintDefinition()
+}
+
+void columnDefinition() :
+{}
+{
+  columnName()
+  dataType()
+  (
+    < NOT_NULL >
+  )?
+}
+
+void tableConstraintDefinition() :
+{}
+{
+  primaryKeyConstraint()
+| referentialConstraint()
+}
+
+void primaryKeyConstraint() :
+{}
+{
+  < PRIMARY_KEY >
+  columnNameList()
+}
+
+void referentialConstraint() :
+{}
+{
+  < FOREIGN_KEY >
+  columnNameList()
+  < REFERENCES >
+  tableName()
+  columnNameList()
+}
+
+void columnNameList() :
+{}
+{
+  < LEFT_PAREN >
+  columnName()
+  (
+    < COMMA >
+    columnName()
+  )*
+  < RIGHT_PAREN >
+}
+
+void dataType() :
+{}
+{
+  < INT >
+| (
+    < CHAR >
+    < LEFT_PAREN >
+    < INT_VALUE >
+    < RIGHT_PAREN >
+  )
+| < DATE >
+}
+
+void tableName() :
+{}
+{
+  < LEGAL_IDENTIFIER >
+}
+
+void columnName() :
+{}
+{
+  < LEGAL_IDENTIFIER >
+}
+
+// DROP TABLE
 void dropTableQuery() :
 {}
 {
@@ -193,6 +286,7 @@ void dropTableQuery() :
   tableName()
 }
 
+// DESC
 void descQuery() :
 {}
 {
@@ -200,12 +294,14 @@ void descQuery() :
   tableName()
 }
 
+// SHOW TABLES
 void showTablesQuery() :
 {}
 {
   < SHOW_TABLES >
 }
 
+// SELECT
 void selectQuery() :
 {}
 {
@@ -395,6 +491,8 @@ void nullOperation() :
   )?
   < NULL >
 }
+
+
   
 
   
@@ -404,93 +502,3 @@ void nullOperation() :
 
   
 
-void tableElementList() :
-{}
-{
-  < LEFT_PAREN >
-  tableElement()
-  (
-    < COMMA >
-    tableElement()
-  )*
-  < RIGHT_PAREN >
-}
-
-void tableElement() :
-{
-}
-{
-  columnDefinition()
-| tableConstraintDefinition()
-}
-
-void columnDefinition() :
-{}
-{
-  columnName()
-  dataType()
-  (
-    < NOT_NULL >
-  )?
-}
-
-void tableConstraintDefinition() :
-{}
-{
-  primaryKeyConstraint()
-| referentialConstraint()
-}
-
-void primaryKeyConstraint() :
-{}
-{
-  < PRIMARY_KEY >
-  columnNameList()
-}
-
-void referentialConstraint() :
-{}
-{
-  < FOREIGN_KEY >
-  columnNameList()
-  < REFERENCES >
-  tableName()
-  columnNameList()
-}
-
-void columnNameList() :
-{}
-{
-  < LEFT_PAREN >
-  columnName()
-  (
-    < COMMA >
-    columnName()
-  )*
-  < RIGHT_PAREN >
-}
-
-void dataType() :
-{}
-{
-  < INT >
-| (
-    < CHAR >
-    < LEFT_PAREN >
-    < INT_VALUE >
-    < RIGHT_PAREN >
-  )
-| < DATE >
-}
-
-void tableName() :
-{}
-{
-  < LEGAL_IDENTIFIER >
-}
-
-void columnName() :
-{}
-{
-  < LEGAL_IDENTIFIER >
-}
