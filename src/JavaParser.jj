@@ -57,7 +57,7 @@ public class SimpleDBMSParser
       	System.out.println("\'SHOW TABLES\' requested");
       	break;	
     }
-    System.out.print("DB_2016-12345> ");
+    System.out.print("DB_201y-yyyyyy> ");
   }
 }
 
@@ -326,10 +326,12 @@ void selectList() :
   )*
   )}
 
+// choice conflict
 void selectedColumn() :
 { }
 {  
   (
+    LOOKAHEAD(2)
     tableName()
     < PERIOD >
   )?
@@ -428,10 +430,12 @@ void parenthesizedBooleanExpression() :
   < RIGHT_PAREN >
 }
 
+// choice conflict
 void predicate() :
 {
 }
 {
+  LOOKAHEAD(3)
   comparisonPredicate()
 | nullPredicate()
 }
@@ -445,6 +449,7 @@ void comparisonPredicate() :
   compOperand()
 }
 
+// choice conflict
 void compOperand() :
 {
 }
@@ -452,6 +457,7 @@ void compOperand() :
   comparableValue()
 | (
     (
+      LOOKAHEAD(2)
       tableName()
       < PERIOD >
     )?
