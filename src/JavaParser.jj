@@ -129,7 +129,15 @@ I used COMPOP token instead of "void compOp()".
 Because this symbols would be ignored by < NON_QUOTE_SPECIAL_CHARACTER >, it makes some problems.
 */
 | < COMPOP :  "<" | ">" | "=" | ">=" | "<=" | "!=" >
-| < QUOTE : "\'">
+/*
+| < LT : "<" >
+| < GT : ">" >
+| < EQ : "=" >
+| < GE : ">=" >
+| < LE : "<=" >
+| < NE : "!=" >
+*/
+| < QUOTE : "\'"|"\"">
 | < NON_QUOTE_CHARACTER : < DIGIT>|< ALPHABET>|< NON_QUOTE_SPECIAL_CHARACTER>|" ">
 | < NON_QUOTE_SPECIAL_CHARACTER : "~"|"!"|"@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"|"_"|"+"|"="|";"|":"|","|"<"|">"|"."|"/"|"?"|"|"|"\\" >
 }
@@ -441,7 +449,8 @@ void referedTable() :
 }
 {
   tableName()
-  (    tableName()
+  (
+    < AS >    tableName()
   )?
 }
 
@@ -533,11 +542,11 @@ void compOperand() :
   )
 }
 /*
-void compOP() :
+void compOp() :
 {
 }
 {
-  "<" | ">" | "=" | ">=" | "<=" | "!=" 
+  < LT > | < GT > | < EQ > | < GE > | < LE > | < NE > 
 }
 */
 void comparableValue() :
