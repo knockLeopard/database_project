@@ -55,7 +55,16 @@ public class SimpleDBMSParser
       	break;
       case PRINT_SHOW_TABLES:
       	System.out.println("\'SHOW TABLES\' requested");
-      	break;	
+      	break;
+      case PRINT_SELECT:
+      	System.out.println("\'SELECT\' requested");
+      	break;
+      case PRINT_INSERT:
+      	System.out.println("\'INSERT\' requested");
+      	break;
+      case PRINT_DELETE:
+      	System.out.println("\'DELETE\' requested");
+      	break;		
     }
     System.out.print("DB_201y-yyyyyy> ");
   }
@@ -171,6 +180,24 @@ int query() :
     showTablesQuery()
     {
       q = PRINT_SHOW_TABLES;
+    }
+  )
+| (
+    selectQuery()
+    {
+      q = PRINT_SELECT;
+    }
+  )
+| (
+    insertQuery()
+    {
+      q = PRINT_INSERT;
+    }
+  )
+| (
+    deleteQuery()
+    {
+      q = PRINT_DELETE;
     }
   )
   
