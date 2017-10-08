@@ -110,20 +110,22 @@ TOKEN :
 | < LEFT_PAREN : "(" >
 | < RIGHT_PAREN : ")" >
 | < COMMA : "," >
-| < PERIOD : "." >
+| < PERIOD : ".">
 | < UNDERSCORE : "_" >
-| < CHAR_STRING : <QUOTE> (<NON_QUOTE_CHARACTER>)* <QUOTE> > 
+| < CHAR_STRING : < QUOTE >(< NON_QUOTE_CHARACTER>)*< QUOTE> >
 | < INT_VALUE : (< SIGN >)? (< DIGIT >)+>
 | < SIGN : "+" | "-" >
-| < DATE_VALUE : <NNNN> "-" <NN> "-" <NN>>
-| < NNNN : < DIGIT > < DIGIT > < DIGIT > < DIGIT >>
-| < NN : < DIGIT > < DIGIT > >
-| < NON_QUOTE_CHARACTER : <DIGIT> | <ALPHABET> | <NON_QUOTE_SPECIAL_CHARACTERS> | " " > 
-| < QUOTE : "'" >
-| < NON_QUOTE_SPECIAL_CHARACTERS :  "!"| "#"| "/"| ":"| "@"| "["| "_"| "]"| "{"| " }"| "~"  >
+| < DATE_VALUE : < NNNN >"-"< NN >"-"< NN >>
+| < NNNN : < DIGIT>< DIGIT>< DIGIT>< DIGIT>>
+| < NN : < DIGIT>< DIGIT>>
 | < DIGIT : [ "0"-"9" ] >
 | < LEGAL_IDENTIFIER : < ALPHABET > (< ALPHABET > | < UNDERSCORE >)* >
 | < ALPHABET : [ "a"-"z", "A"-"Z" ] >
+| < COMPOP :  "<" | ">" | "=" | ">=" | "<=" | "!=" >
+| < QUOTE : "\'">
+| < NON_QUOTE_CHARACTER : < DIGIT>|< ALPHABET>|< NON_QUOTE_SPECIAL_CHARACTER>|" ">
+| < NON_QUOTE_SPECIAL_CHARACTER : "~"|"!"|"@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"
+	| "_"|"+"|"="|";"|":"|","|"<"|">"|"."|"/"|"?"|"|"|"\\" >
 }
 
 void command() :
@@ -164,48 +166,81 @@ int query() :
       q = PRINT_CREATE_TABLE;
     }
   )
-| (
+  (    {
+        return q;
+    }
+  )  
+|
+  (
     dropTableQuery()
     {
       q = PRINT_DROP_TABLE;
     }
   )
-| (
+  (
+    {
+        return q;
+    }
+   )
+|
+  (  
     descQuery()
     {
       q = PRINT_DESC;
     }
+  ) 
+  (
+    {
+      return q;
+    }
   )
-| (
+|
+  (
     showTablesQuery()
     {
       q = PRINT_SHOW_TABLES;
     }
   )
-| (
+  (
+    {
+      return q;
+    }
+  )
+|
+  (
     selectQuery()
     {
       q = PRINT_SELECT;
     }
   )
-| (
+  (
+    {
+      return q;
+    }
+  )
+|
+  (
     insertQuery()
     {
       q = PRINT_INSERT;
     }
   )
-| (
+  (
+    {
+      return q;
+    }
+  )
+|
+  (
     deleteQuery()
     {
       q = PRINT_DELETE;
     }
   )
-  
-  
   (
     {
       return q;
-    }
+  }
   )
 }
 
@@ -472,7 +507,7 @@ void comparisonPredicate() :
 }
 {
   compOperand()
-  compOP()
+  < COMPOP >
   compOperand()
 }
 
@@ -491,14 +526,14 @@ void compOperand() :
     columnName()
   )
 }
-
+/*
 void compOP() :
 {
 }
 {
   "<" | ">" | "=" | ">=" | "<=" | "!=" 
 }
-
+*/
 void comparableValue() :
 {
 }
@@ -574,7 +609,7 @@ void deleteQuery() :
 {
 }
 {
-  < DELETE >
+  < DELETE>
   < FROM >
   tableName()
   (    whereClause()
