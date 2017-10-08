@@ -1,3 +1,5 @@
+// Name, StudentNumber, 2017 Fall Database
+
 options
 {
   static = true;
@@ -121,11 +123,15 @@ TOKEN :
 | < DIGIT : [ "0"-"9" ] >
 | < LEGAL_IDENTIFIER : < ALPHABET > (< ALPHABET > | < UNDERSCORE >)* >
 | < ALPHABET : [ "a"-"z", "A"-"Z" ] >
+
+/*
+I used COMPOP token instead of "void compOp()".
+Because this symbols would be ignored by < NON_QUOTE_SPECIAL_CHARACTER >, it makes some problems.
+*/
 | < COMPOP :  "<" | ">" | "=" | ">=" | "<=" | "!=" >
 | < QUOTE : "\'">
 | < NON_QUOTE_CHARACTER : < DIGIT>|< ALPHABET>|< NON_QUOTE_SPECIAL_CHARACTER>|" ">
-| < NON_QUOTE_SPECIAL_CHARACTER : "~"|"!"|"@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"
-	| "_"|"+"|"="|";"|":"|","|"<"|">"|"."|"/"|"?"|"|"|"\\" >
+| < NON_QUOTE_SPECIAL_CHARACTER : "~"|"!"|"@"|"#"|"$"|"%"|"^"|"&"|"*"|"("|")"|"-"|"_"|"+"|"="|";"|":"|","|"<"|">"|"."|"/"|"?"|"|"|"\\" >
 }
 
 void command() :
